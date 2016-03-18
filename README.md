@@ -18,7 +18,7 @@ The program is run like so:
 The arguments are:
 
     - i <file> The input file should be in multiFASTA format with two sequences.
-    - o <file> The results will be output to a file as a new line seperated list of (p, d) - (ending position in t, edit distance).
+    - o <file> The results will be output to a file as a new line seperated list of (p_t, p_x, d) - (ending position in t, ending position in x, edit distance).
     - l <uint> The length of the factor. This must be less than or equal to the length of x.
     - k <uint> The maximum distance permitted in a match between a factor of x and t.
 
