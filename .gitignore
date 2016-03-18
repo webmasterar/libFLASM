@@ -1,0 +1,5 @@
+/seqan/*
+flasm
+*.o
+/*.out
+/*.fas
