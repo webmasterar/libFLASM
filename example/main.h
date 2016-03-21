@@ -20,6 +20,7 @@
 
 struct TSwitch
 {
+    int                 model;                  // the model to use. 0 = edit distance, 1 = Hamming distance
     char *              input_filename;         // the input file name
     char *              output_filename;        // the output file name
     int                 factor_length;          // the length of the factor

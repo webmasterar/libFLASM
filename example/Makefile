@@ -4,13 +4,13 @@ CC=     g++
 
 CFLAGS= -g -D_USE_64 -msse3 -O3 -fomit-frame-pointer -funroll-loops 
 
-LFLAGS= -std=c++11 -DNDEBUG -I .
+LFLAGS= -std=c++11 -DNDEBUG -I . -I ../
 
 EXE=    flasm
 
-SRC=    mainflasm.cpp libflasm.cpp utils.cpp
+SRC=    main.cpp utils.cpp libflasm.cpp
 
-HD=     mainflasm.h libflasm.h  Makefile
+HD=     main.h ../libflasm.h Makefile
 
 #
 # No need to edit below this line 

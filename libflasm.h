@@ -15,6 +15,13 @@ struct ResultTuple {
     unsigned int error;
 };
 
-multiset<ResultTuple,ResultTuple> flasm ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
+// iterator
+typedef std::multiset<ResultTuple,ResultTuple>::iterator ResultTupleSetIterator; 
+
+// FLASM Edit distance
+std::multiset<ResultTuple,ResultTuple> flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
+
+// FLASM Hamming distance
+std::multiset<ResultTuple,ResultTuple> flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
 
 #endif

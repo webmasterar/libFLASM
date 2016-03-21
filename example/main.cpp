@@ -23,8 +23,8 @@
 #include <string>
 #include <sys/time.h>
 
-#include "mainflasm.h"
-#include "libflasm.h"
+#include "main.h"
+#include "../libflasm.h"
 
 using namespace std;
 
@@ -35,6 +35,7 @@ int main( int argc, char **argv )
 
 	FILE *           in_fd;                  // the input file descriptor
 	FILE *           out_fd;                 // the input file descriptor
+	int              model;                  // the model to use
 	char *           input_filename;         // the input file name
 	char *           output_filename;        // the output file name
 	int              factor_length;          // the factor length
@@ -48,20 +49,19 @@ int main( int argc, char **argv )
 	i = decode_switches ( argc, argv, &sw );
 
 	/* Check the arguments */
-	if ( i < 4 )
+	if ( i < 5 )
 	{
 		usage ();
 		return ( 1 );
 	}
 	else
 	{
+		model                   = sw . model;
 		input_filename          = sw . input_filename;
 		output_filename         = sw . output_filename;
 		factor_length           = sw . factor_length;
 		max_error               = sw . max_error;
 	}
-
-	double start = gettime();
 
 	/* Read the (Multi)FASTA file into memory */
 	fprintf ( stderr, " Reading the (Multi)FASTA input file: %s\n", input_filename );
@@ -193,14 +193,27 @@ int main( int argc, char **argv )
 		fprintf( stderr, " Error: You cannot have fewer than 0 errors!\n");
 		return ( 1 );
 	}
-
+	
+	if ( ! ( model == 0 || model == 1 ) )
+	{
+		fprintf( stderr, " Error: Invalid model used - please use 0 for Edit distance and 1 for Hamming distance!\n");
+		return ( 1 );
+	}
 
 	/* Run the algorithm */
 
-	//multiset<ResultTuple,bool(*)(ResultTuple,ResultTuple)> results;
+	double start = gettime();
+
 	multiset<ResultTuple,ResultTuple> results;
 
-	results = flasm ( seq[0], n, seq[1], m, factor_length, max_error );
+	if ( model == 0 )
+	{
+		results = flasm_ed ( seq[0], n, seq[1], m, factor_length, max_error );
+	}
+	else
+	{
+		results = flasm_hd ( seq[0], n, seq[1], m, factor_length, max_error );
+	}
 
 	double end = gettime();
 
@@ -214,8 +227,7 @@ int main( int argc, char **argv )
 
 	fprintf( out_fd, "#(end_pos_t,end_pos_x,error)\n" );
 
-	//std::multiset<ResultTuple,bool(*)(ResultTuple,ResultTuple)>::iterator it;
-	std::multiset<ResultTuple,ResultTuple>::iterator it;
+	ResultTupleSetIterator it;
 	for ( it = results.begin(); it != results.end(); ++it )
 	{
 		ResultTuple res = *it;
@@ -227,6 +239,8 @@ int main( int argc, char **argv )
 		fprintf( stderr, " Error: file close error!\n");
 		return ( 1 );
 	}
+
+	/* Give summary of results */
 
 	fprintf( stderr, " Seq T id is %s and its length is %u\n", seq_id[0], n );
 	fprintf( stderr, " Seq X id is %s and its length is %u\n", seq_id[1], m );
@@ -246,4 +260,3 @@ int main( int argc, char **argv )
 
 	return ( 0 );
 }
-

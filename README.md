@@ -1,27 +1,82 @@
-libFLASM
-========
+# libFLASM
 
 GNU GPLv3 License; Copyright (C) 2016 Lorraine A. K. Ayad, Solon P. Pissis and Ahmad Retha.
 
-The application libFLASM performs Fixed Length Approximate String Matching under
-the simple edit distance model and makes use of Myer's bit-parallel algorithm
-as implemented by the Seqan project.
+The libFLASM library can perform Fixed Length Approximate String Matching under
+two distance models: Edit distance and Hamming distance.
 
 Given a text *t* of length *n* and a pattern *x* of length *m*, libFLASM finds
 any factor of length *h* <= *m* from *x* in *t* and reports the ending positions
-where it finds a match.
+where it finds matches.
 
-The program is run like so:
+The function signatures of libFLASM are:
 
-`./flasm -i input.fas -o positions.out -l 7 -k 1`
+```
+/**
+ * This is the libFLASM edit distance function.
+ *
+ * @param t The text (haystack) to search in
+ * @param n The length of t
+ * @param x The pattern which has factors that may be present in t
+ * @param m The length of x
+ * @param factor_length The length of a factor (needle)
+ * @param max_error The maximum distance between the factor and a position in t to report
+ * @return The discovered positions are returned in a set that can be iterated over
+ */
+std::multiset<ResultTuple,ResultTuple> flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error );
 
-The arguments are:
+/**
+ * This is the libFLASM Hamming distance function.
+ *
+ * @param t The text (haystack) to search in
+ * @param n The length of t
+ * @param x The pattern which has factors that may be present in t
+ * @param m The length of x
+ * @param factor_length The length of a factor (needle)
+ * @param max_error The maximum distance between the factor and a position in t to report
+ * @return The discovered positions are returned in a set that can be iterated over
+ */
+std::multiset<ResultTuple,ResultTuple> flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error );
+```
+These methods return a set of tuples each of which contain:
 
-    - i <file> The input file should be in multiFASTA format with two sequences.
-    - o <file> The results will be output to a file as a line seperated list of tuples (p_t, p_x, ed) - (ending position in t, ending position in x, edit distance).
-    - l <uint> The length of the factor. This must be less than or equal to the length of x.
-    - k <uint> The maximum distance permitted in a match between a factor of x and t.
+```
+/**
+ * A result tuple contains:
+ * 	- pos_t The ending position of the match in t
+ * 	- pos_x The ending position of the match in x
+ * 	- error The distance between the factor and the match in t
+ */
+struct ResultTuple {
+    unsigned int pos_t;
+    unsigned int pos_x;
+    unsigned int error;
+};
+```
 
-To compile the program, please read INSTALL.md.
+The library also provides an iterator to loop through the results:
 
-To find out how to use the program you can look at the examples in ./examples
+```
+/* example of how to iterate through a resultset */
+ResultTupleSetIterator it;
+for ( it = results.begin(); it != results.end(); ++it )
+{
+    ResultTuple res = *it;
+    cout << "(" << res.pos_t << "," << res.pos_x << "," << res.error << ")" << endl;
+}
+```
+
+To find out more about how to use the library you can look in the ./example folder.
+
+## Citations
+
+The simple edit distance model makes use of Gene Myer's bit-vector algorithm
+as implemented by the SeqAn project. The Hamming distance model makes use of
+the MaxShiftM implementation of the MaxShift algorithm. If you make use of this
+library please cite these references:
+
+    Döring, Andreas, et al. "SeqAn an efficient, generic C++ library for sequence analysis." BMC bioinformatics 9.1 (2008): 11.
+
+    Myers, Gene. "A fast bit-vector algorithm for approximate string matching based on dynamic programming." Journal of the ACM (JACM) 46.3 (1999): 395-415.
+
+    Pissis, Solon, and Ahmad Retha. "Generalised Implementation for Fixed-Length Approximate String Matching under Hamming Distance and Applications." Parallel and Distributed Processing Symposium Workshop (IPDPSW), 2015 IEEE International. IEEE, 2015.

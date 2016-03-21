@@ -21,7 +21,18 @@
 
 #include "libflasm.h"
 
-multiset<ResultTuple,ResultTuple> flasm ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
+/**
+ * This is the libFLASM edit distance function.
+ *
+ * @param t The text (haystack) to search in
+ * @param n The length of t
+ * @param x The pattern which has factors that may be present in t
+ * @param m The length of x
+ * @param factor_length The length of a factor (needle)
+ * @param max_error The maximum distance between the factor and a position in t to report
+ * @return The discovered positions are returned in a set that can be iterated over
+ */
+std::multiset<ResultTuple,ResultTuple> flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
 {
 	unsigned char * h;
 	h = ( unsigned char * ) calloc ( factor_length + 1, sizeof ( unsigned char ) );
@@ -69,5 +80,22 @@ multiset<ResultTuple,ResultTuple> flasm ( unsigned char * t, unsigned int n, uns
 
 	free ( h );
 
+	return results;
+}
+
+/**
+ * This is the libFLASM Hamming distance function.
+ *
+ * @param t The text (haystack) to search in
+ * @param n The length of t
+ * @param x The pattern which has factors that may be present in t
+ * @param m The length of x
+ * @param factor_length The length of a factor (needle)
+ * @param max_error The maximum distance between the factor and a position in t to report
+ * @return The discovered positions are returned in a set that can be iterated over
+ */
+std::multiset<ResultTuple,ResultTuple> flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
+{
+	multiset<ResultTuple,ResultTuple> results;
 	return results;
 }

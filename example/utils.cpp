@@ -27,10 +27,11 @@
 #include <limits.h>
 #include <sys/time.h>
 
-#include "mainflasm.h"
+#include "main.h"
 
 static struct option long_options[] =
 {
+   { "model",                   required_argument, NULL, 'm' },
    { "input-file",              required_argument, NULL, 'i' },
    { "output-file",             required_argument, NULL, 'o' },
    { "factor-length",           required_argument, NULL, 'l' },
@@ -56,12 +57,18 @@ int decode_switches ( int argc, char * argv [], struct TSwitch * sw )
    sw -> output_filename    = NULL;
    sw -> factor_length      = 0;
    sw -> max_error          = 0;
+   sw -> model              = 0;
    args = 0;
 
-   while ( ( opt = getopt_long ( argc, argv, "i:o:l:k:h", long_options, &oi ) ) != - 1 )
+   while ( ( opt = getopt_long ( argc, argv, "m:i:o:l:k:h", long_options, &oi ) ) != - 1 )
     {
       switch ( opt )
        {
+         case 'm':
+           sw -> model = atoi ( optarg );
+           args ++;
+           break;
+
          case 'i':
            sw -> input_filename = ( char * ) malloc ( ( strlen ( optarg ) + 1 ) * sizeof ( char ) );
            strcpy ( sw -> input_filename, optarg );
@@ -89,7 +96,7 @@ int decode_switches ( int argc, char * argv [], struct TSwitch * sw )
        }
     }
 
-   if ( args < 4 )
+   if ( args < 5 )
    {
        usage ();
        exit ( 1 );
@@ -108,6 +115,7 @@ void usage ( void )
 {
     fprintf ( stdout, " flasm <options>\n" );
     fprintf ( stdout, " Required arguments:\n" );
+    fprintf ( stdout, "  -m, --model                 <uint>     The distance model. 0 = Edit distance, 1 = Hamming distance.\n" );
     fprintf ( stdout, "  -i, --input-file            <file>     (Multi)FASTA input filename containing two sequences: T and X.\n" );
     fprintf ( stdout, "  -o, --output-file           <file>     Output filename for the positions.\n" );
     fprintf ( stdout, "  -l, --factor-length         <uint>     The length of the factor of X to match against T.\n" );
