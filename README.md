@@ -7,9 +7,9 @@ The application libFLASM performs Fixed Length Approximate String Matching under
 the simple edit distance model and makes use of Myer's bit-parallel algorithm
 as implemented by the Seqan project.
 
-Given a text t of length n and a pattern x of length m, libFLASM finds any
-factor of length h <= m from x in t and report the ending positions where it
-finds a match.
+Given a text *t* of length *n* and a pattern *x* of length *m*, libFLASM finds
+any factor of length *h* <= *m* from *x* in *t* and reports the ending positions
+where it finds a match.
 
 The program is run like so:
 
@@ -18,11 +18,10 @@ The program is run like so:
 The arguments are:
 
     - i <file> The input file should be in multiFASTA format with two sequences.
-    - o <file> The results will be output to a file as a new line seperated list of (p_t, p_x, d) - (ending position in t, ending position in x, edit distance).
+    - o <file> The results will be output to a file as a line seperated list of tuples (p_t, p_x, ed) - (ending position in t, ending position in x, edit distance).
     - l <uint> The length of the factor. This must be less than or equal to the length of x.
     - k <uint> The maximum distance permitted in a match between a factor of x and t.
 
 To compile the program, please read INSTALL.md.
 
 To find out how to use the program you can look at the examples in ./examples
-

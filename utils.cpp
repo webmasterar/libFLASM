@@ -91,8 +91,6 @@ int decode_switches ( int argc, char * argv [], struct TSwitch * sw )
 
    if ( args < 4 )
    {
-
-       fprintf( stderr, " %u arguments \n", args );
        usage ();
        exit ( 1 );
    }
@@ -122,4 +120,3 @@ double gettime( void )
     gettimeofday( &ttime , 0 );
     return ttime.tv_sec + ttime.tv_usec * 0.000001;
 }
-

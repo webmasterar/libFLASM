@@ -31,17 +31,17 @@ using namespace std;
 int main( int argc, char **argv )
 {
 
-	struct TSwitch  sw;
+	struct TSwitch sw;
 
 	FILE *           in_fd;                  // the input file descriptor
 	FILE *           out_fd;                 // the input file descriptor
 	char *           input_filename;         // the input file name
 	char *           output_filename;        // the output file name
-    int              factor_length;          // the factor length
-    int              max_error;              // the maximum edit distance
+	int              factor_length;          // the factor length
+	int              max_error;              // the maximum edit distance
 	unsigned char ** seq    = NULL;          // the sequence in memory
 	unsigned char ** seq_id = NULL;          // the sequence id in memory
-	
+
 	unsigned int i;
 
 	/* Decodes the arguments */
@@ -49,112 +49,112 @@ int main( int argc, char **argv )
 
 	/* Check the arguments */
 	if ( i < 4 )
-    {
-        usage ();
-        return ( 1 );
-    }
-    else
-    {
-        input_filename          = sw . input_filename;
-        output_filename         = sw . output_filename;
-        factor_length           = sw . factor_length;
-        max_error               = sw . max_error;
-    }
+	{
+		usage ();
+		return ( 1 );
+	}
+	else
+	{
+		input_filename          = sw . input_filename;
+		output_filename         = sw . output_filename;
+		factor_length           = sw . factor_length;
+		max_error               = sw . max_error;
+	}
 
 	double start = gettime();
 
-    /* Read the (Multi)FASTA file into memory */
-    fprintf ( stderr, " Reading the (Multi)FASTA input file: %s\n", input_filename );
-    if ( ! ( in_fd = fopen ( input_filename, "r") ) )
-    {
-            fprintf ( stderr, " Error: Cannot open file %s!\n", input_filename );
-            return ( 1 );
-    }
+	/* Read the (Multi)FASTA file into memory */
+	fprintf ( stderr, " Reading the (Multi)FASTA input file: %s\n", input_filename );
+	if ( ! ( in_fd = fopen ( input_filename, "r") ) )
+	{
+		fprintf ( stderr, " Error: Cannot open file %s!\n", input_filename );
+		return ( 1 );
+	}
 
-    char c;
-    unsigned int num_seqs           = 0;
-    unsigned int total_length       = 0;
-    unsigned int max_alloc_seq_id   = 0;
-    unsigned int max_alloc_seq      = 0;
-    c = fgetc( in_fd );
-    do
-    {
-            if ( c != '>' )
-            {
-                    fprintf ( stderr, " Error: input file %s is not in FASTA format!\n", input_filename );
-                    return ( 1 );
-            }
-            else
-            {
-                    if ( num_seqs >= max_alloc_seq_id )
-                    {
-                            seq_id = ( unsigned char ** ) realloc ( seq_id,   ( max_alloc_seq_id + ALLOC_SIZE ) * sizeof ( unsigned char * ) );
-                            max_alloc_seq_id += ALLOC_SIZE;
-                    }
+	char c;
+	unsigned int num_seqs           = 0;
+	unsigned int total_length       = 0;
+	unsigned int max_alloc_seq_id   = 0;
+	unsigned int max_alloc_seq      = 0;
+	c = fgetc( in_fd );
+	do
+	{
+		if ( c != '>' )
+		{
+			fprintf ( stderr, " Error: input file %s is not in FASTA format!\n", input_filename );
+			return ( 1 );
+		}
+		else
+		{
+			if ( num_seqs >= max_alloc_seq_id )
+			{
+				seq_id = ( unsigned char ** ) realloc ( seq_id,   ( max_alloc_seq_id + ALLOC_SIZE ) * sizeof ( unsigned char * ) );
+				max_alloc_seq_id += ALLOC_SIZE;
+			}
 
-                    unsigned int max_alloc_seq_id_len = 0;
-                    unsigned int seq_id_len = 0;
+			unsigned int max_alloc_seq_id_len = 0;
+			unsigned int seq_id_len = 0;
 
-                    seq_id[ num_seqs ] = NULL;
+			seq_id[ num_seqs ] = NULL;
 
-                    while ( ( c = fgetc( in_fd ) ) != EOF && c != '\n' )
-                    {
-                            if ( seq_id_len >= max_alloc_seq_id_len )
-                            {
-                                    seq_id[ num_seqs ] = ( unsigned char * ) realloc ( seq_id[ num_seqs ],   ( max_alloc_seq_id_len + ALLOC_SIZE ) * sizeof ( unsigned char ) );
-                                    max_alloc_seq_id_len += ALLOC_SIZE;
-                            }
-                            seq_id[ num_seqs ][ seq_id_len++ ] = c;
-                    }
-                    seq_id[ num_seqs ][ seq_id_len ] = '\0';
+			while ( ( c = fgetc( in_fd ) ) != EOF && c != '\n' )
+			{
+				if ( seq_id_len >= max_alloc_seq_id_len )
+				{
+					seq_id[ num_seqs ] = ( unsigned char * ) realloc ( seq_id[ num_seqs ],   ( max_alloc_seq_id_len + ALLOC_SIZE ) * sizeof ( unsigned char ) );
+					max_alloc_seq_id_len += ALLOC_SIZE;
+				}
+				seq_id[ num_seqs ][ seq_id_len++ ] = c;
+			}
+			seq_id[ num_seqs ][ seq_id_len ] = '\0';
 
-            }
-	        if ( num_seqs >= max_alloc_seq )
-            {
-                    seq = ( unsigned char ** ) realloc ( seq,   ( max_alloc_seq + ALLOC_SIZE ) * sizeof ( unsigned char * ) );
-                    max_alloc_seq += ALLOC_SIZE;
-            }
+		}
+		    if ( num_seqs >= max_alloc_seq )
+		{
+			seq = ( unsigned char ** ) realloc ( seq,   ( max_alloc_seq + ALLOC_SIZE ) * sizeof ( unsigned char * ) );
+			max_alloc_seq += ALLOC_SIZE;
+		}
 
-            unsigned int seq_len = 0;
-            unsigned int max_alloc_seq_len = 0;
+		unsigned int seq_len = 0;
+		unsigned int max_alloc_seq_len = 0;
 
-            seq[ num_seqs ] = NULL;
+		seq[ num_seqs ] = NULL;
 
-            while ( ( c = fgetc( in_fd ) ) != EOF && c != '>' )
-            {
-                    if( seq_len == 0 && c == '\n' )
-                    {
-                            fprintf ( stderr, " Omitting empty sequence in file %s!\n", input_filename );
-                            c = fgetc( in_fd );
-                            break;
-                    }
-                    if( c == '\n' || c == ' ' ) continue;
+		while ( ( c = fgetc( in_fd ) ) != EOF && c != '>' )
+		{
+			if( seq_len == 0 && c == '\n' )
+			{
+				fprintf ( stderr, " Omitting empty sequence in file %s!\n", input_filename );
+				c = fgetc( in_fd );
+				break;
+			}
+			if( c == '\n' || c == ' ' ) continue;
 
-                    c = toupper( c );
+			c = toupper( c );
 
-                    if ( seq_len >= max_alloc_seq_len )
-                    {
-                            seq[ num_seqs ] = ( unsigned char * ) realloc ( seq[ num_seqs ],   ( max_alloc_seq_len + ALLOC_SIZE ) * sizeof ( unsigned char ) );
-                            max_alloc_seq_len += ALLOC_SIZE;
-                    }
+			if ( seq_len >= max_alloc_seq_len )
+			{
+				seq[ num_seqs ] = ( unsigned char * ) realloc ( seq[ num_seqs ],   ( max_alloc_seq_len + ALLOC_SIZE ) * sizeof ( unsigned char ) );
+				max_alloc_seq_len += ALLOC_SIZE;
+			}
 
-                    seq[ num_seqs ][ seq_len++ ] = c;
+			seq[ num_seqs ][ seq_len++ ] = c;
 
-            }
+		}
 
-            if( seq_len != 0 )
-            {
-                    if ( seq_len >= max_alloc_seq_len )
-                    {
-                            seq[ num_seqs ] = ( unsigned char * ) realloc ( seq[ num_seqs ],   ( max_alloc_seq_len + ALLOC_SIZE ) * sizeof ( unsigned char ) );
-                            max_alloc_seq_len += ALLOC_SIZE;
-                    }
-                    seq[ num_seqs ][ seq_len ] = '\0';
-                    total_length += seq_len;
-                    num_seqs++;
-            }
+		if( seq_len != 0 )
+		{
+			if ( seq_len >= max_alloc_seq_len )
+			{
+				seq[ num_seqs ] = ( unsigned char * ) realloc ( seq[ num_seqs ],   ( max_alloc_seq_len + ALLOC_SIZE ) * sizeof ( unsigned char ) );
+				max_alloc_seq_len += ALLOC_SIZE;
+			}
+			seq[ num_seqs ][ seq_len ] = '\0';
+			total_length += seq_len;
+			num_seqs++;
+		}
 
-    } while( c != EOF );
+	} while( c != EOF );
 
 	if ( fclose ( in_fd ) )
 	{
@@ -171,39 +171,40 @@ int main( int argc, char **argv )
         	fprintf( stderr, " Warning: Only the first two (%s, %s) will be processed!\n", seq_id[0], seq_id[1] );
 	}
 
-    /* Check arguments sensible */
-    if ( factor_length > min(m,n) )
-    {
-   		fprintf( stderr, " Error: factor length cannot be longer than T or X!\n");
+	/* Check arguments sensible */
+	if ( factor_length > min(m,n) )
+	{
+		fprintf( stderr, " Error: factor length cannot be longer than T or X!\n");
 		return ( 1 );
-    }
-    else if ( factor_length < 2 )
-    {
+	}
+	else if ( factor_length < 2 )
+	{
 		fprintf( stderr, " Error: factor length too short!\n");
 		return ( 1 );
-    }
+	}
 
-    if ( max_error >= factor_length )
-    {
+	if ( max_error >= factor_length )
+	{
 		fprintf( stderr, " Error: The number of errors is too high!\n");
 		return ( 1 );
-    }
-    else if ( max_error < 0 )
-    {
+	}
+	else if ( max_error < 0 )
+	{
 		fprintf( stderr, " Error: You cannot have fewer than 0 errors!\n");
 		return ( 1 );
-    }
+	}
 
 
 	/* Run the algorithm */
 
-    multiset<ResultTuple,bool(*)(ResultTuple,ResultTuple)> results;
+	//multiset<ResultTuple,bool(*)(ResultTuple,ResultTuple)> results;
+	multiset<ResultTuple,ResultTuple> results;
 
-    results = flasm ( seq[0], n, seq[1], m, factor_length, max_error );
+	results = flasm ( seq[0], n, seq[1], m, factor_length, max_error );
 
 	double end = gettime();
 
-    /* Write results to output file */
+	/* Write results to output file */
 
 	if ( ! ( out_fd = fopen ( output_filename, "w") ) )
 	{
@@ -211,14 +212,15 @@ int main( int argc, char **argv )
 		return ( 1 );
 	}
 
-    fprintf( out_fd, "#(end_pos_t,end_pos_x,error)\n" );
+	fprintf( out_fd, "#(end_pos_t,end_pos_x,error)\n" );
 
-    std::multiset<ResultTuple,bool(*)(ResultTuple,ResultTuple)>::iterator it;
-    for (it = results.begin(); it != results.end(); ++it)
-    {
-        ResultTuple res = *it;
-    	fprintf( out_fd, "(%d,%d,%d)\n", res.pos_t, res.pos_x, res.error );
-    }
+	//std::multiset<ResultTuple,bool(*)(ResultTuple,ResultTuple)>::iterator it;
+	std::multiset<ResultTuple,ResultTuple>::iterator it;
+	for ( it = results.begin(); it != results.end(); ++it )
+	{
+		ResultTuple res = *it;
+		fprintf( out_fd, "(%u,%u,%u)\n", res.pos_t, res.pos_x, res.error );
+	}
 
 	if ( fclose ( out_fd ) )
 	{
@@ -226,21 +228,21 @@ int main( int argc, char **argv )
 		return ( 1 );
 	}
 
-    fprintf( stderr, " Seq T id is %s and its length is %u\n", seq_id[0], n );
-    fprintf( stderr, " Seq X id is %s and its length is %u\n", seq_id[1], m );
-	fprintf( stderr, " Wrote %d positions to file %s!\n", (int) results.size(), output_filename );
-    fprintf( stderr, " Elapsed time for LibFLASM: %lf secs\n", ( end - start ) );
+	fprintf( stderr, " Seq T id is %s and its length is %u\n", seq_id[0], n );
+	fprintf( stderr, " Seq X id is %s and its length is %u\n", seq_id[1], m );
+	fprintf( stderr, " Wrote %d positions to file %s\n", (int) results.size(), output_filename );
+	fprintf( stderr, " Elapsed time for LibFLASM: %lf secs\n", ( end - start ) );
 
 	/* Free memory */
-    for ( i = 0; i < num_seqs; i ++ )
-    {
-        free ( seq[i] );
-        free ( seq_id[i] );
-    }
-    free ( seq );
-    free ( seq_id );
-    free ( sw . input_filename );
-    free ( sw . output_filename );
+	for ( i = 0; i < num_seqs; i ++ )
+	{
+		free ( seq[i] );
+		free ( seq_id[i] );
+	}
+	free ( seq );
+	free ( seq_id );
+	free ( sw . input_filename );
+	free ( sw . output_filename );
 
 	return ( 0 );
 }

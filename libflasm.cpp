@@ -21,61 +21,53 @@
 
 #include "libflasm.h"
 
-inline bool compare ( ResultTuple a, ResultTuple b )
+multiset<ResultTuple,ResultTuple> flasm ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
 {
-    return a.error < b.error;
+	unsigned char * h;
+	h = ( unsigned char * ) calloc ( factor_length + 1, sizeof ( unsigned char ) );
+
+	int k = -max_error;
+	unsigned int error = 0;
+	unsigned int pos_t = 0;
+	unsigned int pos_x = 0;
+
+	multiset<ResultTuple,ResultTuple> results;
+
+	CharString haystack = (CharString) t;
+	CharString needle;
+	Finder<CharString> finder( haystack );
+	Pattern<CharString, Myers<>> pattern;
+
+	unsigned int i;
+	for ( i = 0; i < m - factor_length + 1; i++ )
+	{
+		memcpy( &h[0], &x[i], factor_length );
+		h[factor_length] = '\0';
+
+		needle = (CharString) h;
+
+		setNeedle( pattern, needle );
+
+		while ( find( finder, pattern, k ) )
+		{
+
+			pos_t = ( unsigned int ) endPosition( finder );
+
+			pos_x = i + factor_length;
+
+			error = ( unsigned int ) abs( getScore( pattern ) );
+
+			ResultTuple result = {pos_t, pos_x, error};
+
+			results.insert( result );
+
+		}
+
+		goBegin ( finder );
+
+	}
+
+	free ( h );
+
+	return results;
 }
-
-multiset<ResultTuple,bool(*)(ResultTuple,ResultTuple)> flasm ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
-{
-    unsigned char * h;
-    h = ( unsigned char * ) calloc ( factor_length + 1, sizeof ( unsigned char ) );
-
-    int k = -max_error;
-    int error = 0;
-    int pos_t = 0;
-    int pos_x = 0;
-
-    bool(*fn_compare)(ResultTuple,ResultTuple) = compare;
-    multiset<ResultTuple,bool(*)(ResultTuple,ResultTuple)> results(fn_compare);
-
-    CharString haystack = (CharString) t;
-   	Finder<CharString> finder( haystack );
-
-    unsigned int i;
-    for ( i = 0; i < m - factor_length + 1; i++ )
-    {
-        memcpy( &h[0], &x[i], factor_length );
-        h[factor_length] = '\0';
-
-        //fprintf ( stderr, "%s\n", h );
-
-        CharString needle = (CharString) h;
-
-    	Pattern<CharString, Myers<>> pattern( needle );
-
-    	while (  find( finder, pattern, k ) )
-        {
-        	while ( findBegin( finder, pattern, getScore( pattern ) ) )
-	        {
-
-                pos_t = ( int ) endPosition(finder);
-
-                pos_x = i + factor_length;
-
-		        error = abs( getScore( pattern ) );
-
-                ResultTuple result = {pos_t, pos_x, error};
-
-                results.insert(result);
-
-	        }
-        }
-
-    }
-
-    free ( h );
-
-    return results;
-}
-
