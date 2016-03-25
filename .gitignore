@@ -1,4 +1,5 @@
 /seqan/*
+/maxshiftm/*
 flasm
 *.o
 /data/*.out

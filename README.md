@@ -23,7 +23,7 @@ The function signatures of libFLASM are:
  * @param max_error The maximum distance between the factor and a position in t to report
  * @return The discovered positions are returned in a set that can be iterated over
  */
-std::multiset<ResultTuple,ResultTuple> flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error );
+ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error );
 
 /**
  * This is the libFLASM Hamming distance function.
@@ -36,9 +36,9 @@ std::multiset<ResultTuple,ResultTuple> flasm_ed ( unsigned char * t, unsigned in
  * @param max_error The maximum distance between the factor and a position in t to report
  * @return The discovered positions are returned in a set that can be iterated over
  */
-std::multiset<ResultTuple,ResultTuple> flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error );
+ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error );
 ```
-These methods return a set of tuples each of which contain:
+These methods return a set of tuples and each tuple contains:
 
 ```
 /**
@@ -54,7 +54,7 @@ struct ResultTuple {
 };
 ```
 
-The library also provides an iterator to loop through the results:
+The library also provides an iterator to loop through the results, each item of which is a ResultTuple:
 
 ```
 /* example of how to iterate through a resultset */

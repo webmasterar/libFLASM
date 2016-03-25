@@ -24,7 +24,6 @@
 #include <sys/time.h>
 
 #include "main.h"
-#include "../libflasm.h"
 
 using namespace std;
 
@@ -172,7 +171,8 @@ int main( int argc, char **argv )
 	}
 
 	/* Check arguments sensible */
-	if ( factor_length > min(m,n) )
+	unsigned int min_len = min(m,n);
+	if ( factor_length > min_len )
 	{
 		fprintf( stderr, " Error: factor length cannot be longer than T or X!\n");
 		return ( 1 );
@@ -194,7 +194,7 @@ int main( int argc, char **argv )
 		return ( 1 );
 	}
 	
-	if ( ! ( model == 0 || model == 1 ) )
+	if ( ! ( model == EDIT_DISTANCE || model == HAMMING_DISTANCE ) )
 	{
 		fprintf( stderr, " Error: Invalid model used - please use 0 for Edit distance and 1 for Hamming distance!\n");
 		return ( 1 );
@@ -204,9 +204,9 @@ int main( int argc, char **argv )
 
 	double start = gettime();
 
-	multiset<ResultTuple,ResultTuple> results;
+	ResultTupleSet results;
 
-	if ( model == 0 )
+	if ( model == EDIT_DISTANCE )
 	{
 		results = flasm_ed ( seq[0], n, seq[1], m, factor_length, max_error );
 	}

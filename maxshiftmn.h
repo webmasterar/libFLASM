@@ -16,21 +16,21 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "../libflasm.h"
+#ifndef __MAXSHIFTMN__
+#define __MAXSHIFTMN__
 
-#define ALLOC_SIZE 		1048576
-#define EDIT_DISTANCE 		0
-#define HAMMING_DISTANCE 	1
+//#include "maxshiftm/maxshiftm.h"
 
-struct TSwitch
+using namespace maxshiftm;
+
+class MaxShiftMn : public MaxShiftM
 {
-    int                 model;                  // the model to use. 0 = edit distance, 1 = Hamming distance
-    char *              input_filename;         // the input file name
-    char *              output_filename;        // the output file name
-    int                 factor_length;          // the length of the factor
-    int                 max_error;              // the maximum mismatches allowed in a match
+    private:
+	unsigned int max_k;
+	
+    public:
+	MaxShiftMn ( unsigned char * t, unsigned int n, unsigned char * p, unsigned int m, unsigned int factor_length, unsigned int max_error );
+	ResultTupleSet run ();
 };
 
-double gettime ( void );
-int decode_switches ( int argc, char * argv [], struct TSwitch * sw );
-void usage ( void );
+#endif

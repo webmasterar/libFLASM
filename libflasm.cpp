@@ -20,6 +20,7 @@
 #include <stdlib.h>
 
 #include "libflasm.h"
+#include "maxshiftmn.h"
 
 /**
  * This is the libFLASM edit distance function.
@@ -32,7 +33,7 @@
  * @param max_error The maximum distance between the factor and a position in t to report
  * @return The discovered positions are returned in a set that can be iterated over
  */
-std::multiset<ResultTuple,ResultTuple> flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
+ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
 {
 	unsigned char * h;
 	h = ( unsigned char * ) calloc ( factor_length + 1, sizeof ( unsigned char ) );
@@ -42,7 +43,7 @@ std::multiset<ResultTuple,ResultTuple> flasm_ed ( unsigned char * t, unsigned in
 	unsigned int pos_t = 0;
 	unsigned int pos_x = 0;
 
-	multiset<ResultTuple,ResultTuple> results;
+	ResultTupleSet results;
 
 	CharString haystack = (CharString) t;
 	CharString needle;
@@ -62,15 +63,15 @@ std::multiset<ResultTuple,ResultTuple> flasm_ed ( unsigned char * t, unsigned in
 		while ( find( finder, pattern, k ) )
 		{
 
-			pos_t = ( unsigned int ) endPosition( finder );
+			pos_t = (unsigned int) endPosition( finder );
 
 			pos_x = i + factor_length;
 
-			error = ( unsigned int ) abs( getScore( pattern ) );
+			error = (unsigned int) abs( getScore( pattern ) );
 
-			ResultTuple result = {pos_t, pos_x, error};
+			ResultTuple match = {pos_t, pos_x, error};
 
-			results.insert( result );
+			results.insert( match );
 
 		}
 
@@ -94,8 +95,25 @@ std::multiset<ResultTuple,ResultTuple> flasm_ed ( unsigned char * t, unsigned in
  * @param max_error The maximum distance between the factor and a position in t to report
  * @return The discovered positions are returned in a set that can be iterated over
  */
-std::multiset<ResultTuple,ResultTuple> flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
+ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
 {
-	multiset<ResultTuple,ResultTuple> results;
+	/*
+	ResultTupleSet results;
+
+	MaxShiftM mx(t,n,x,m,factor_length);
+
+	unsigned int ii = 0, jj = 0, kk = 0;
+
+	mx.maxshiftm_hd ( &ii, &jj, &kk );
+
+	ResultTuple match  = {ii, jj, kk};
+
+	results.insert ( match );
+
 	return results;
+	*/
+	
+	MaxShiftMn mn ( t, n, x, m, factor_length, max_error );
+
+	return mn.run();
 }
