@@ -4,7 +4,7 @@
 
 The program is run like so:
 
-`./flasm -i input.fas -o positions.out -l 7 -k 1`
+`./flasm -m 0 -i input.fas -o positions.out -l 7 -k 1`
 
 The arguments are:
 
@@ -16,7 +16,26 @@ The arguments are:
 
 ## Example data
 
-@@todo
+The folder ../data/ contains some sample multiFASTA files that we can use. Let's
+use 1.fasta and save the results to 1.out in the same directory. A factor length
+of 9 will be used for our example and an maximum error distance of 1 too. We will
+run the edit distance method first:
+
+`./flasm -m 0 -i ../data/1.fasta -o ../data/1.out -l 9 -k 1`
+
+The output file contains:
+
+```
+#(end_pos_t,end_pos_x,error)
+(10,33,1)
+(15,38,1)
+(16,39,1)
+(20,43,1)
+(46,18,1)
+```
+
+All of our results have at least one error and are listed in order of least error, ending position in t and in x. As this example uses simple edit distance, the matching factor in t
+can be as long as l + k or as short as l - k with insertions and deletions respectively.
 
 ## Compiling
 

@@ -63,9 +63,9 @@ ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, 
 		while ( find( finder, pattern, k ) )
 		{
 
-			pos_t = (unsigned int) endPosition( finder );
+			pos_t = (unsigned int) endPosition( finder ) - 1;
 
-			pos_x = i + factor_length;
+			pos_x = i + factor_length - 1;
 
 			error = (unsigned int) abs( getScore( pattern ) );
 
@@ -76,6 +76,8 @@ ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, 
 		}
 
 		goBegin ( finder );
+
+		clear (finder );
 
 	}
 
@@ -97,22 +99,6 @@ ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, 
  */
 ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
 {
-	/*
-	ResultTupleSet results;
-
-	MaxShiftM mx(t,n,x,m,factor_length);
-
-	unsigned int ii = 0, jj = 0, kk = 0;
-
-	mx.maxshiftm_hd ( &ii, &jj, &kk );
-
-	ResultTuple match  = {ii, jj, kk};
-
-	results.insert ( match );
-
-	return results;
-	*/
-	
 	MaxShiftMn mn ( t, n, x, m, factor_length, max_error );
 
 	return mn.run();
