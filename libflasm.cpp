@@ -18,9 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "libflasm.h"
-#include "maxshiftmn.h"
 
 /**
  * This is the libFLASM edit distance function.
@@ -62,7 +60,6 @@ ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, 
 
 		while ( find( finder, pattern, k ) )
 		{
-
 			pos_t = (unsigned int) endPosition( finder ) - 1;
 
 			pos_x = i + factor_length - 1;
@@ -72,12 +69,10 @@ ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, 
 			ResultTuple match = {pos_t, pos_x, error};
 
 			results.insert( match );
-
 		}
-
+		
+		clear( finder );
 		goBegin ( finder );
-
-		clear (finder );
 
 	}
 
@@ -99,7 +94,102 @@ ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, 
  */
 ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
 {
-	MaxShiftMn mn ( t, n, x, m, factor_length, max_error );
+	ResultTupleSet results;
 
-	return mn.run();
+	//initialise 2 line matrix
+    	WORD * M0;
+    	WORD * M1;
+	WORD y; 
+
+	unsigned int  err, i, j;
+	if ( ( M0 = ( WORD * ) calloc ( ( m + 1 ) , sizeof ( WORD  ) ) ) == NULL )
+	{
+		fprintf( stderr, " Error: M0 could not be allocated!\n");
+		return results;
+	}
+	if ( ( M1 = ( WORD * ) calloc ( ( m + 1 ) , sizeof ( WORD ) ) ) == NULL )
+	{
+		fprintf( stderr, " Error: M1 could not be allocated!\n");
+		return results;
+	}
+	y = ( ( WORD ) ( 1 ) << ( factor_length - 1 ) ) - 1;
+   
+	//loop through sequences
+    	for ( i = 0; i < n + 1; i++ ) //loop through t
+    	{
+        	for ( j = 1; j < m + 1; j++ ) //loop through p
+        	{
+			switch ( i % 2 ) 
+			{
+				case 0:
+
+				if ( i == 0 )
+					M0[j] = ( ( WORD ) 2 << ( min ( j , factor_length ) - 1 ) ) - 1;
+				else
+					M0[j] = shift_c ( M1[j - 1], y ) | _delta ( t[i - 1], x[j - 1] );
+
+                    		if ( j >= factor_length && i >= factor_length )
+                    		{                
+                        		err = popcount_words ( M0[j] );
+
+                        		if ( err <= max_error )
+                        		{
+			    			ResultTuple match = { i - 1, j - 1, err };
+                            			results.insert ( match );
+                        		}
+                    		}
+                    		break;
+
+                		case 1:
+
+				if( i == 0 )
+					M1[j] = ( ( WORD ) 2 << ( min ( j , factor_length ) - 1 ) ) - 1;
+				else
+					M1[j] = shift_c ( M0[j - 1], y ) | _delta ( t[i - 1], x[j - 1] );
+
+                    		if ( j >= factor_length && i >= factor_length )
+                    		{                
+                        		err = ( unsigned int ) popcount_words ( M1[j] );
+
+                        		if ( err  <= max_error )
+                        		{
+			    			ResultTuple match = { i - 1, j - 1, err };
+                            			results.insert ( match );
+                        		}
+                    		}
+                    		break;
+            		}
+		}
+    	}
+
+    	free ( M0 );
+    	free ( M1 );
+    	
+	return results;
+}
+
+
+inline WORD _shift ( WORD a ) 
+{
+	return ( ( WORD ) a << 1 );
+}
+
+inline WORD shift_c( WORD a, WORD x ) 
+{
+	return _shift ( a & x );
+}
+
+unsigned int popcount_words ( WORD words )
+{
+	unsigned int count = __builtin_popcountl ( words );
+  
+	return count;
+}
+
+inline unsigned int _delta( char a, char b )
+{
+	if( a == b )			
+		return 0;
+	else					
+		return 1;
 }

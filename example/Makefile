@@ -8,11 +8,11 @@ LFLAGS= -std=c++11 -DNDEBUG -I . -I ../
 
 EXE=    flasm
 
-SRC=    main.cpp utils.cpp ../maxshiftm/MaxShiftM.cpp ../libflasm.cpp ../MaxShiftMn.cpp
+SRC=    main.cpp utils.cpp  ../libflasm.cpp
 
 OBJ=    main.o utils.o
 
-HD=     main.h ../libflasm.h ../maxshiftm/maxshiftm.h ../maxshiftmn.h Makefile
+HD=     main.h ../libflasm.h  Makefile
 
 #
 # No need to edit below this line 

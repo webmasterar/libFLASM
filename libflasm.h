@@ -20,11 +20,10 @@
 #define __LIBFLASM__
 
 #include "seqan/find.h"
-#include "maxshiftm/maxshiftm.h"
 
+typedef unsigned long int WORD;
 using namespace std;
 using namespace seqan;
-using namespace maxshiftm;
 
 // stores a single result tuple and provides comparator (operator) function for sorting results
 struct ResultTuple {
@@ -45,5 +44,10 @@ ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, 
 
 // FLASM Hamming distance
 ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
+
+inline WORD _shift ( WORD a );
+inline WORD shift_c ( WORD a, WORD x );
+unsigned int popcount_words ( WORD words );
+inline unsigned int _delta( char a, char b );
 
 #endif

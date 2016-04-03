@@ -24,6 +24,7 @@
 #include <sys/time.h>
 
 #include "main.h"
+#include "../libflasm.h"
 
 using namespace std;
 
