@@ -25,6 +25,39 @@ typedef unsigned long int WORD;
 using namespace std;
 using namespace seqan;
 
+
+/**
+ * WORD size
+ */
+#define BYTE_SIZE 8
+#define WORD_SIZE sizeof ( WORD ) * BYTE_SIZE
+
+/**
+ * A structure to hold number of WORDs and bits needed to store m. Also contains
+ * yWord mask to be used to clear the left-most bits on the most significant
+ * WORD in the errors array
+ */
+typedef struct _Limit
+{
+    unsigned int words;
+    unsigned int h;
+    unsigned int yIndex;
+    WORD yWord;
+} _Limit;
+
+/**
+ * Function definitions
+ */
+#define max(a,b) ((a) > (b)) ? (a) : (b)
+#define min(a,b) ((a) < (b)) ? (a) : (b)
+
+_Limit init_limit ( unsigned int h, struct _Limit lim );
+unsigned int popcount_words ( WORD * words, int length );
+WORD * shift_words ( WORD * words, int length );
+WORD * shiftc_words ( WORD * words, struct _Limit lim );
+WORD delta ( char a, char b );
+
+
 // stores a single result tuple and provides comparator (operator) function for sorting results
 struct ResultTuple {
     bool operator() (const ResultTuple& a, const ResultTuple& b) const {return ( a.error < b.error ) || ( a.error == b.error && a.pos_t < b.pos_t ) || ( a.error == b.error && a.pos_t == b.pos_t && a.pos_x < b.pos_x );};
@@ -44,10 +77,5 @@ ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, 
 
 // FLASM Hamming distance
 ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
-
-inline WORD _shift ( WORD a );
-inline WORD shift_c ( WORD a, WORD x );
-unsigned int popcount_words ( WORD words );
-inline unsigned int _delta( char a, char b );
 
 #endif
