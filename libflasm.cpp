@@ -232,18 +232,6 @@ ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, 
 	return results;
 }
 
-
-inline WORD _shift ( WORD a ) 
-{
-	return ( ( WORD ) a << 1 );
-}
-
-inline WORD shift_c( WORD a, WORD x ) 
-{
-	return _shift ( a & x );
-}
-
-
 inline _Limit init_limit ( unsigned int h, struct _Limit lim )
 {
     double WSd = (double) WORD_SIZE;
