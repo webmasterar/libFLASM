@@ -19,31 +19,60 @@
 #ifndef __LIBFLASM__
 #define __LIBFLASM__
 
+#include <stdio.h>
+#include <cstring>
+#include <cstdlib>
+#include <cmath>
+#include <limits.h>
+
 #include "seqan/find.h"
-#include "maxshiftm/maxshiftm.h"
 
 using namespace std;
 using namespace seqan;
-using namespace maxshiftm;
 
-// stores a single result tuple and provides comparator (operator) function for sorting results
-struct ResultTuple {
-    bool operator() (const ResultTuple& a, const ResultTuple& b) const {return ( a.error < b.error ) || ( a.error == b.error && a.pos_t < b.pos_t ) || ( a.error == b.error && a.pos_t == b.pos_t && a.pos_x < b.pos_x );};
-    unsigned int pos_t;
-    unsigned int pos_x;
-    unsigned int error;
-};
+namespace libflasm
+{
 
-// resultset
-typedef std::multiset<ResultTuple,ResultTuple> ResultTupleSet;
+    /**
+    * WORD, WORD_SIZE and delta function definitions
+    */
+    typedef unsigned long int WORD;
+    #define BYTE_SIZE 8
+    #define WORD_SIZE sizeof ( WORD ) * BYTE_SIZE
+    #define delta(a,b) ( ( WORD ) ((a) != (b)) )
 
-// resultset iterator
-typedef ResultTupleSet::iterator ResultTupleSetIterator; 
+    /**
+    * A structure to hold number of WORDs and bits needed to store the errors of a
+    * factor. Also contains yWord mask to be used to clear the left-most bits on
+    * the most significant WORD in the errors array
+    */
+    struct Limit
+    {
+	unsigned int words;
+	unsigned int h;
+	WORD yWord;
+    };
 
-// FLASM Edit distance
-ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
+    // stores a single result tuple and provides comparator (operator) function for sorting results
+    struct ResultTuple {
+	bool operator() (const ResultTuple& a, const ResultTuple& b) const {return ( a.error < b.error ) || ( a.error == b.error && a.pos_t < b.pos_t ) || ( a.error == b.error && a.pos_t == b.pos_t && a.pos_x < b.pos_x );};
+	unsigned int pos_t;
+	unsigned int pos_x;
+	unsigned int error;
+    };
 
-// FLASM Hamming distance
-ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
+    // resultset
+    typedef std::multiset<ResultTuple,ResultTuple> ResultTupleSet;
+
+    // resultset iterator
+    typedef ResultTupleSet::iterator ResultTupleSetIterator; 
+
+    // FLASM Edit distance
+    ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
+
+    // FLASM Hamming distance
+    ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
+
+}
 
 #endif

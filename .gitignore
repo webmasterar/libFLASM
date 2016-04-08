@@ -1,6 +1,5 @@
 /seqan/*
-/maxshiftm/*
-flasm
 *.o
+*.so
 /data/*.out
 /*.fas

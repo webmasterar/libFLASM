@@ -20,12 +20,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <string>
 #include <sys/time.h>
 
 #include "main.h"
 
 using namespace std;
+using namespace libflasm;
 
 int main( int argc, char **argv )
 {
@@ -45,9 +45,11 @@ int main( int argc, char **argv )
 	unsigned int i;
 
 	/* Decodes the arguments */
+
 	i = decode_switches ( argc, argv, &sw );
 
 	/* Check the arguments */
+
 	if ( i < 5 )
 	{
 		usage ();
@@ -63,6 +65,7 @@ int main( int argc, char **argv )
 	}
 
 	/* Read the (Multi)FASTA file into memory */
+
 	fprintf ( stderr, " Reading the (Multi)FASTA input file: %s\n", input_filename );
 	if ( ! ( in_fd = fopen ( input_filename, "r") ) )
 	{
@@ -171,6 +174,7 @@ int main( int argc, char **argv )
 	}
 
 	/* Check arguments sensible */
+
 	unsigned int min_len = min(m,n);
 	if ( factor_length > min_len )
 	{
@@ -248,6 +252,7 @@ int main( int argc, char **argv )
 	fprintf( stderr, " Elapsed time for LibFLASM: %lf secs\n", ( end - start ) );
 
 	/* Free memory */
+
 	for ( i = 0; i < num_seqs; i ++ )
 	{
 		free ( seq[i] );

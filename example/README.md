@@ -59,4 +59,6 @@ it finds more matches.
 
 ## Compiling
 
-To compile the program, please read ../INSTALL.md.
+To compile the program you need to create the library libflasm.so file first.
+Please read ../INSTALL.md to do this, then return to this directory and simply
+run `make` on the command line to build this example program.

@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-#include "../libflasm.h"
+#include <libflasm.h>
 
 #define ALLOC_SIZE 		1048576
 #define EDIT_DISTANCE 		0

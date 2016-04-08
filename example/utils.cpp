@@ -29,6 +29,7 @@
 
 #include "main.h"
 
+
 static struct option long_options[] =
 {
    { "model",                   required_argument, NULL, 'm' },
@@ -122,9 +123,14 @@ void usage ( void )
     fprintf ( stdout, "  -k, --max-error             <uint>     The maximum error (edit distance) permitted in a match.\n" );
 }
 
+
+/*
+Get time for timer
+*/
 double gettime( void )
 {
     struct timeval ttime;
     gettimeofday( &ttime , 0 );
     return ttime.tv_sec + ttime.tv_usec * 0.000001;
 }
+
