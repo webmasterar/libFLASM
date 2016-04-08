@@ -86,8 +86,8 @@ as implemented by the SeqAn project. The Hamming distance model makes use of
 the MaxShiftM implementation of the MaxShift algorithm. If you make use of this
 library please cite these references:
 
-    Andreas Döring, et al. "SeqAn an efficient, generic C++ library for sequence analysis." BMC bioinformatics 9.1 (2008): 11.
+    Döring, Andreas, et al. "SeqAn an efficient, generic C++ library for sequence analysis." BMC bioinformatics 9.1 (2008): 11.
 
     Gene Myers. "A fast bit-vector algorithm for approximate string matching based on dynamic programming." J. ACM 46, 3 (May 1999), 395-415.
 
-    Solon P. Pissis and Ahmad Retha. "Generalised Implementation for Fixed-Length Approximate String Matching under Hamming Distance and Applications." Parallel and Distributed Processing Symposium Workshop (IPDPSW), 2015 IEEE International. IEEE, 2015.
+    Pissis, Solon, and Ahmad Retha. "Generalised Implementation for Fixed-Length Approximate String Matching under Hamming Distance and Applications." Parallel and Distributed Processing Symposium Workshop (IPDPSW), 2015 IEEE International. IEEE, 2015.

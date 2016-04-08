@@ -60,7 +60,6 @@ ResultTupleSet libflasm::flasm_ed ( unsigned char * t, unsigned int n, unsigned 
 
 		while ( find( finder, pattern, k ) )
 		{
-
 			pos_t = (unsigned int) endPosition( finder ) - 1;
 
 			pos_x = i + factor_length - 1;
@@ -70,13 +69,11 @@ ResultTupleSet libflasm::flasm_ed ( unsigned char * t, unsigned int n, unsigned 
 			ResultTuple match = {pos_t, pos_x, error};
 
 			results.insert( match );
-
 		}
 
-		clear ( finder );
+		clear( finder );
 
-		goBegin ( finder );
-
+		goBegin( finder );
 	}
 
 	free ( h );
