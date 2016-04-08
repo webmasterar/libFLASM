@@ -20,6 +20,7 @@
 
 using namespace libflasm;
 
+
 /**
  * This is the libFLASM edit distance function.
  *
@@ -81,7 +82,15 @@ ResultTupleSet libflasm::flasm_ed ( unsigned char * t, unsigned int n, unsigned 
 	return results;
 }
 
-
+/**
+ * Given a factor string length, this function sets the Limit structure to hold
+ * the number of WORDS needed in the array as well as generating a bit mask
+ * (yWord) to clear far left bits on the most significant byte
+ * 
+ * @param h Length of factor we are looking for
+ * @param lim
+ * @return
+ */
 inline libflasm::Limit init_limit ( unsigned int h, struct libflasm::Limit lim )
 {
 	double WSd = (double) WORD_SIZE;
