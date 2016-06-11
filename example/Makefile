@@ -4,7 +4,7 @@ CC=     g++
 
 CFLAGS= -g -D_USE_64 -msse3 -O3 -fomit-frame-pointer -funroll-loops
 
-LFLAGS= -std=c++11 -DNDEBUG -I . -I ../ -L ../ -lflasm -Wl,-rpath=$(PWD)/../
+LFLAGS= -std=c++11 -DNDEBUG -I . -I ../ -L ../ -Wl,-rpath=$(PWD)/../
 
 EXE=    flasm
 
@@ -27,7 +27,7 @@ HD=     main.h Makefile
 all:    $(EXE) 
 
 $(EXE): $(OBJ)
-	$(CC) $(CFLAGS) $(LFLAGS) $(SRC) -o $@
+	$(CC) $(CFLAGS) $(LFLAGS) $(SRC) -o $@ -lflasm
 
 $(OBJ): $(HD) 
 
