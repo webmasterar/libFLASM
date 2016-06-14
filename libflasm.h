@@ -68,10 +68,10 @@ namespace libflasm
     typedef ResultTupleSet::iterator ResultTupleSetIterator; 
 
     // FLASM Edit distance
-    ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
+    ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error, bool return_all );
 
     // FLASM Hamming distance
-    ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error);
+    ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error, bool return_all );
 
 }
 

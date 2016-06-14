@@ -29,6 +29,7 @@ struct TSwitch
     char *              output_filename;        // the output file name
     int                 factor_length;          // the length of the factor
     int                 max_error;              // the maximum mismatches allowed in a match
+    bool                return_all;             // if true all matches are returned
 };
 
 double gettime ( void );

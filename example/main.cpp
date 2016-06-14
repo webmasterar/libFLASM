@@ -39,6 +39,7 @@ int main( int argc, char **argv )
 	char *           input_filename;         // the input file name
 	char *           output_filename;        // the output file name
 	int              factor_length;          // the factor length
+	bool             return_all;             // the return all matches flag
 	int              max_error;              // the maximum edit distance
 	unsigned char ** seq    = NULL;          // the sequence in memory
 	unsigned char ** seq_id = NULL;          // the sequence id in memory
@@ -62,6 +63,7 @@ int main( int argc, char **argv )
 		input_filename          = sw . input_filename;
 		output_filename         = sw . output_filename;
 		factor_length           = sw . factor_length;
+		return_all              = sw . return_all;
 		max_error               = sw . max_error;
 	}
 
@@ -213,11 +215,11 @@ int main( int argc, char **argv )
 
 	if ( model == EDIT_DISTANCE )
 	{
-		results = flasm_ed ( seq[0], n, seq[1], m, factor_length, max_error );
+		results = flasm_ed ( seq[0], n, seq[1], m, factor_length, max_error, return_all );
 	}
 	else
 	{
-		results = flasm_hd ( seq[0], n, seq[1], m, factor_length, max_error );
+		results = flasm_hd ( seq[0], n, seq[1], m, factor_length, max_error, return_all );
 	}
 
 	double end = gettime();
@@ -247,6 +249,7 @@ int main( int argc, char **argv )
 
 	/* Give summary of results */
 
+	fprintf( stderr, " Max-error is %u and factor length is %u\n", max_error, factor_length );
 	fprintf( stderr, " Seq T id is %s and its length is %u\n", seq_id[0], n );
 	fprintf( stderr, " Seq X id is %s and its length is %u\n", seq_id[1], m );
 	fprintf( stderr, " Wrote %d positions to file %s\n", (int) results.size(), output_filename );

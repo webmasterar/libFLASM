@@ -30,9 +30,10 @@ The function signatures of libFLASM are:
  * @param m The length of x
  * @param factor_length The length of a factor (needle)
  * @param max_error The maximum distance between the factor and a position in t to report
+ * @param return_all Return all matches or just the first best one
  * @return The discovered positions are returned in a set that can be iterated over
  */
-ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error );
+ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error, bool return_all );
 
 /**
  * This is the libFLASM Hamming distance function.
@@ -43,9 +44,10 @@ ResultTupleSet flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, 
  * @param m The length of x
  * @param factor_length The length of a factor (needle)
  * @param max_error The maximum distance between the factor and a position in t to report
+ * @param return_all Return all matches or just the first best one
  * @return The discovered positions are returned in a set that can be iterated over
  */
-ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error );
+ResultTupleSet flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error, bool return_all );
 ```
 These methods return a set of tuples and each tuple contains:
 

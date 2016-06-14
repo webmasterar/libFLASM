@@ -2,7 +2,7 @@ MF=     Makefile
 
 CC=     g++
 
-CFLAGS= -g -D_USE_64 -msse3 -O3 -fomit-frame-pointer -funroll-loops
+CFLAGS= -g -D_USE_64 -msse4.2 -O3 -fomit-frame-pointer -funroll-loops
 
 LFLAGS= -std=c++11 -DNDEBUG -I . -I ../ -L ../ -lflasm -Wl,-rpath=$(PWD)/../
 

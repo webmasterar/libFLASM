@@ -37,6 +37,7 @@ static struct option long_options[] =
    { "output-file",             required_argument, NULL, 'o' },
    { "factor-length",           required_argument, NULL, 'l' },
    { "max-error",               required_argument, NULL, 'k' },
+   { "return-all",              no_argument,       NULL, 'r' },
    { "help",                    no_argument,       NULL, 'h' },
    {  NULL,                     0,                 NULL,  0  }
 };
@@ -57,11 +58,12 @@ int decode_switches ( int argc, char * argv [], struct TSwitch * sw )
    sw -> input_filename     = NULL;
    sw -> output_filename    = NULL;
    sw -> factor_length      = 0;
+   sw -> return_all         = false;
    sw -> max_error          = 0;
    sw -> model              = 0;
    args = 0;
 
-   while ( ( opt = getopt_long ( argc, argv, "m:i:o:l:k:h", long_options, &oi ) ) != - 1 )
+   while ( ( opt = getopt_long ( argc, argv, "m:i:o:l:k:rh", long_options, &oi ) ) != - 1 )
     {
       switch ( opt )
        {
@@ -92,6 +94,9 @@ int decode_switches ( int argc, char * argv [], struct TSwitch * sw )
            args ++;
            break;
 
+	 case 'r':
+	   sw -> return_all = true;
+
          case 'h':
            return ( 0 );
        }
@@ -115,12 +120,13 @@ Usage of the tool
 void usage ( void )
 {
     fprintf ( stdout, " flasm <options>\n" );
-    fprintf ( stdout, " Required arguments:\n" );
+    fprintf ( stdout, " Available arguments:\n" );
     fprintf ( stdout, "  -m, --model                 <uint>     The distance model. 0 = Edit distance, 1 = Hamming distance.\n" );
     fprintf ( stdout, "  -i, --input-file            <file>     (Multi)FASTA input filename containing two sequences: T and X.\n" );
     fprintf ( stdout, "  -o, --output-file           <file>     Output filename for the positions.\n" );
     fprintf ( stdout, "  -l, --factor-length         <uint>     The length of the factor of X to match against T.\n" );
     fprintf ( stdout, "  -k, --max-error             <uint>     The maximum error (edit distance) permitted in a match.\n" );
+    fprintf ( stdout, "  -r, --return-all            <void>     Optional. If present, all matches are returned, otherwise only the best.\n\n" );
 }
 
 

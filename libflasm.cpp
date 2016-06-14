@@ -30,9 +30,10 @@ using namespace libflasm;
  * @param m The length of x
  * @param factor_length The length of a factor (needle)
  * @param max_error The maximum distance between the factor and a position in t to report
+ * @param return_all Return all matches or just the first best one
  * @return The discovered positions are returned in a set that can be iterated over
  */
-ResultTupleSet libflasm::flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
+ResultTupleSet libflasm::flasm_ed ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error, bool return_all )
 {
 	unsigned char * h;
 	h = ( unsigned char * ) calloc ( factor_length + 1, sizeof ( unsigned char ) );
@@ -41,6 +42,8 @@ ResultTupleSet libflasm::flasm_ed ( unsigned char * t, unsigned int n, unsigned 
 	unsigned int error = 0;
 	unsigned int pos_t = 0;
 	unsigned int pos_x = 0;
+
+	ResultTuple best = {0, 0, m};
 
 	ResultTupleSet results;
 
@@ -67,9 +70,20 @@ ResultTupleSet libflasm::flasm_ed ( unsigned char * t, unsigned int n, unsigned 
 
 			error = (unsigned int) abs( getScore( pattern ) );
 
-			ResultTuple match = {pos_t, pos_x, error};
+			if ( return_all )
+			{
+				ResultTuple match = {pos_t, pos_x, error};
 
-			results.insert( match );
+				results.insert( match );
+			}
+			else if ( error < best.error )
+			{
+				best.pos_t = pos_t;
+
+				best.pos_x = pos_x;
+
+				best.error = error;
+			}
 		}
 
 		clear( finder );
@@ -78,6 +92,11 @@ ResultTupleSet libflasm::flasm_ed ( unsigned char * t, unsigned int n, unsigned 
 	}
 
 	free ( h );
+
+	if ( !return_all && best.error != m )
+	{
+		results.insert( best );
+	}
 
 	return results;
 }
@@ -170,13 +189,16 @@ inline WORD * shiftc_words ( WORD * words, struct libflasm::Limit lim )
  * @param m The length of x
  * @param factor_length The length of a factor (needle)
  * @param max_error The maximum distance between the factor and a position in t to report
+ * @param return_all Return all matches or just the first best one
  * @return The discovered positions are returned in a set that can be iterated over
  */
-ResultTupleSet libflasm::flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error )
+ResultTupleSet libflasm::flasm_hd ( unsigned char * t, unsigned int n, unsigned char * x, unsigned int m, unsigned int factor_length, unsigned int max_error, bool return_all )
 {
 	ResultTupleSet results;
 
 	unsigned int i, j, k, err;
+
+	ResultTuple best = {0, 0, m};
 
 	libflasm::Limit lim;
 	lim = init_limit ( factor_length, lim );
@@ -256,8 +278,20 @@ ResultTupleSet libflasm::flasm_hd ( unsigned char * t, unsigned int n, unsigned 
 
 					if ( err <= max_error )
 					{
-						ResultTuple match = { j - 1, i - 1, err };
-						results.insert ( match );
+						if ( return_all )
+						{
+							ResultTuple match = { j - 1, i - 1, err };
+
+							results.insert ( match );
+						}
+						else if ( err < best.error )
+						{
+							best.pos_t = j - 1;
+
+							best.pos_x = i - 1;
+
+							best.error = err;
+						}
 					}
 
 				}
@@ -291,8 +325,20 @@ ResultTupleSet libflasm::flasm_hd ( unsigned char * t, unsigned int n, unsigned 
 
 					if ( err <= max_error )
 					{
-						ResultTuple match = { j - 1, i - 1, err };
-						results.insert ( match );
+						if ( return_all )
+						{
+							ResultTuple match = { j - 1, i - 1, err };
+
+							results.insert ( match );
+						}
+						else if ( err < best.error )
+						{
+							best.pos_t = j - 1;
+
+							best.pos_x = i - 1;
+
+							best.error = err;
+						}
 					}
 				}
 				break;
@@ -308,6 +354,11 @@ ResultTupleSet libflasm::flasm_hd ( unsigned char * t, unsigned int n, unsigned 
 	free ( M0 );
 	free ( M1 );
 	free ( ones );
+
+	if ( !return_all && best.error != m )
+	{
+		results.insert( best );
+	}
 
 	return results;
 }
