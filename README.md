@@ -81,7 +81,7 @@ To compile the library to create libflasm.so please read INSTALL.md.
 
 To find out more about how to use the library you can look in the ./example folder.
 
-## Citations
+## Citation
 
 If you make use of the library in an academic setting, please cite the following:
 
