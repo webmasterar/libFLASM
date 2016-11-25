@@ -85,4 +85,4 @@ To find out more about how to use the library you can look in the ./example fold
 
 If you make use of the library in an academic setting, please cite the following:
 
-    L. A. K. Ayad, S. P. Pissis and A. Retha, "libFLASM: a software library for fixed-length approximate string matching", BMC Bioinformatics, vol. 17, no. 1, 2016, pp. 454.
+    L. A. Ayad, S. P. Pissis and A. Retha, "libFLASM: a software library for fixed-length approximate string matching", BMC Bioinformatics, vol. 17, no. 1, 2016, pp. 454.
