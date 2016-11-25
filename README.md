@@ -83,13 +83,6 @@ To find out more about how to use the library you can look in the ./example fold
 
 ## Citations
 
-The simple edit distance model makes use of Gene Myer's bit-vector algorithm
-as implemented by the SeqAn project. The Hamming distance model makes use of
-the MaxShiftM implementation of the MaxShift algorithm. If you make use of this
-library please cite these references:
+If you make use of the library in an academic setting, please cite the following:
 
-    Andreas Döring, et al. "SeqAn an efficient, generic C++ library for sequence analysis." BMC bioinformatics 9.1 (2008): 11.
-
-    Gene Myers. "A fast bit-vector algorithm for approximate string matching based on dynamic programming." J. ACM 46, 3 (May 1999), 395-415.
-
-    Solon Pissis and Ahmad Retha. "Generalised Implementation for Fixed-Length Approximate String Matching under Hamming Distance and Applications." Parallel and Distributed Processing Symposium Workshop (IPDPSW), 2015 IEEE International. IEEE, 2015.
+    L. A. Ayad, S. P. Pissis and A. Retha, "libFLASM: a software library for fixed-length approximate string matching", BMC Bioinformatics, vol. 17, no. 1, 2016, pp. 454.
